@@ -1,0 +1,45 @@
+每天进步一点点，未来前进一大步：
+相逢何必曾相识，唯有一心度终生。
+-----------------------------
+one day 
+egret libs :egret core:
+ egret核心代码结构：
+        bin-debug/调试运行时出现的运行文件
+        node_modules/egret核心代码库
+        .idea/
+        tools/node_modules
+        src/egret/**/*.js  
+        src/egret/**/**/*.js
+        src/extension/**/*.js
+        src/extension/**/**/*.js  egret加载以及扩展的JavaScript文件
+
+        tools/nodejs/buildTS.local
+        *.local
+        *.map
+        .idea
+        /tools/lib/exml/src/code/skins/Panel.js
+        /tools/lib/exml/src/code/skins/Panel.ts
+        /tools/lib/exml/src/code/components/Button.js
+        /tools/lib/exml/src/egret.d.ts
+
+        *.swp
+        *~
+        .DS_Store
+        .[Tt]humb
+        *.config
+        obj/
+        *.user
+        *.suo
+        *.sln
+        *.csproj
+        *.ide/
+        npm-debug.log
+        src/tsc_config_temp.txt
+        /bin
+        /tsconfig.json
+        /index.html
+        /src/tests
+
+        .wing/settings.json
+        /built
+        /tests
