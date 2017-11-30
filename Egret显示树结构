@@ -1,0 +1,21 @@
+                                      Stage
+                                        |
+                                        |
+                                        |
+                          Egret Document Class instance
+                            |                         |
+                            |                         |  
+                    Display Object           Display Object Container
+                                                      |
+                                                      |
+                                              ————————————————————
+                                             |                    |      
+                                 Display Object Container      Display Object
+                                             |
+                                             |
+                                 Display Object Container
+                                             |
+                                     ————————————————————
+                                    |                    |   
+                             Display Object         Display Object
+————————————————————————————————————————————————————————————————————————————显示树结构——————————————————————————————————————————————————
