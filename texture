@@ -1,0 +1,30 @@
+
+-------------------------------------方式一----------------------------------------
+//创建 ImageLoader 对象
+			var loader:egret.ImageLoader = new egret.ImageLoader();
+			//添加加载完成侦听
+			loader.addEventListener(egret.Event.COMPLETE, this.onLoadComplete, this);
+			var url:string = this.configData.skin;
+			//开始加载
+			loader.load(url);
+      
+      
+ public onLoadComplete(event:egret.Event):void {
+		var skinImg:eui.Image = this.jumpBtn.getChildAt(0) as eui.Image;
+        var loader:egret.ImageLoader = <egret.ImageLoader>event.target;
+        //获取加载到的纹理对象
+        var bitmapData:egret.BitmapData = loader.data;
+        //创建纹理对象
+        var texture = new egret.Texture();
+        texture.bitmapData = bitmapData;
+        //创建 Bitmap 进行显示
+        // this.addChild(new egret.Bitmap(texture));
+		skinImg.texture = texture;
+    }     
+    
+    
+ -------------------------------方式二----------------------------------------------------
+ RES.getResByUrl(this.configData.skin,(data:egret.Texture)=>{
+				skinImg.texture = data;
+			},this,"image");
+      //千万注意：this这个回调对象，不然会出现报错
