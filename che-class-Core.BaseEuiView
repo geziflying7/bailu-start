@@ -24,7 +24,7 @@ module Core
             if(this._active)
             {
                 App.callbackMappingCenter.unRegitserByThisObj(this);//通过回调对象类来注销回调绑定
-                App.MessageCenter.removeByThisObj(this);
+                App.MessageCenter.removeByThisObj(this);//消息处理中心的实例化对象类
                 this.skinName = null;
                 this._skinResName = null;
                 this._active = false;
