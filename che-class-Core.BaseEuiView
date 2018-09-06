@@ -10,6 +10,7 @@ module Core
         
         public constructor(skinResName:string)
         {
+            //根据皮肤类名，初始化视图
             super();
             this._skinResName = skinResName;
             this.skinName = Core.AppConst.SKIN_PATH + skinResName;
@@ -22,7 +23,7 @@ module Core
         {
             if(this._active)
             {
-                App.callbackMappingCenter.unRegitserByThisObj(this);
+                App.callbackMappingCenter.unRegitserByThisObj(this);//通过回调对象类来注销回调绑定
                 App.MessageCenter.removeByThisObj(this);
                 this.skinName = null;
                 this._skinResName = null;
