@@ -1,0 +1,133 @@
+/**
+*消息处理中心
+*/
+module Core
+{
+    export class MessageCenter extends BaseSingleton
+    {
+        private _typeList:string[];//坚挺处理的消息事件类型
+        private _listnerList:Function[];//监听的事件监听
+        private _thisObjList:any[];//发起监听的事件对象
+        private _groupList:string[];//监听的对象所在的容器
+        
+        public constructor()
+        {
+            super();
+            //初始化消息处理类容器
+            this._typeList = [];
+            this._listenerList = [];
+            this._thisObjList = [];
+            this._groupList = [];
+        }
+        
+        /**设置对象的监听事件**/
+        public addListener(type:string,listener:Function,thisObj:any,group:string=null):void
+        {
+            if(type && listener && type.length >0)
+            {
+                this.removeListener(type,listener,thisObj);
+                this._typeList.push(type);
+                this.listenerList.push(listener);
+                this._thisObjList.push(thisObj);
+                this._groupList.push(group);
+            }
+        }
+        /**清除对象的监听事件**/
+        public removeListener(type:string,listener:Function,this,thisObj:any):void
+        {
+            var idx:number = this._listenerList.indexOf(listener);
+            if(idx >= 0&& this._typeList[idx] == type && this._thisObjList[idx] == thisObj)
+            {
+                this.removeByIdx(idx);
+            }
+        }
+        
+        /**通过监听类型，清除对象相应监听**/
+        public removeByType(type:string):void
+        {
+            if(type)
+            {
+                for(var idx:number = this._typeList.length - 1;idx >= 0;idx--)
+                {
+                    if(this._typeList[idx] == type)
+                    {
+                        this.removeByIdx(idx);
+                    }
+                }
+            }
+        }
+        
+        /**通过对象本身，清除对象**/
+        public removeByThisObj(thisObj:any):void
+        {
+            if(thisObj)
+            {
+                for(var idx:number = this._thisObjList.length - 1;idx >= 0;idx--)
+                {
+                    if(this._thisObjList[idx] == thisObj)
+                    {
+                        this.removeByIdx(idx);
+                    }
+                }
+            }
+        }
+        
+        /**通过对象容器，清除对象监听**/
+        public removeByGroup(group:string)
+        {
+          if(group)
+          {
+              for(var idx:number = this._groupList.length - 1;idx >= 0;idx--)
+              {
+                  if(this._groupList[idx] == group)
+                  {
+                      this.removeByIdx(idx);
+                  }
+              }
+          }
+        }
+        
+        /**通过索引清除对象，以及相应的监听**/
+        private removeByIdx(idx:number):void
+        {
+            this._typeList.splice(idx,1);
+            this._listenerList.splice(idx,1);
+            this._thisObjList.splice(idx,1);
+            this._groupList.splice(idx,1);
+        }
+        
+        /**dispatch消息调用**/
+        public dispatch(type:string,data:any = null):void
+        {
+            var idx:number;
+            var dispatchListenerList:Function[] = [];
+            vhar dispatchThisObjList:any[] = [];
+            for(idx = 0; idx < this._typeList.length; idx++)
+            {
+                if(this._typeList[idx] == type)
+                {
+                    dispatchListenerList.push(this._listenerList[idx]);
+                    dispatchThisObjList.push(this._thisObjList[idx]);
+                }
+            }
+            if(dispatchListenerList.length > 0 )
+            {
+                var listener:Function;
+                var thisObj:any;
+                for(idx = 0;idx <dispatchListenerList.length;idx++)
+                {
+                    listener = dispatchListenerList[idx];
+                    thisObj = dispatchThisObjList[idx];
+                    if(data == null)
+                    {
+                        listener.apply(thisObj);
+                    }else{
+                        listener.apply(thisObj,[data]);
+                    }
+                }
+                App.Tool.clearArray(dispatchListenerList);
+                App.Tool.clearArray(dispatchThisObjList);
+            }
+        }
+    }
+}
