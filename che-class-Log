@@ -1,0 +1,55 @@
+/**
+*前端打印日志Log类
+*/
+class Log{
+  public static trace(..optionParams:any[]):void
+  {
+    var text:string = optionParams.join(",");
+    console.log("[Log]"+text);
+  }
+  
+  /**
+  *打印输出
+  *@param data 输出对象
+  *@param desrcibe 描述内容
+  */
+  public static log(data:any,describe:string='')
+  {
+    let getType = Object.prototype.toString;
+    let type = getType.call(data);
+    switch(type)
+    {
+      case "[object String]":
+          console.log(describe +"" +data);
+          break;
+      case "[object Number]":
+          console.log(describe +""+data);
+          break;
+      case "[object Boolean]":
+          console.log(describe +""+data);
+          break;
+      case "[object Undefined]":
+          console.log(describe+""+data);
+          break;
+      case "[object Null]":
+          console.log(describe+""+data);
+          break;
+      case "[object Object]":
+          if(describe != "") console.log(describe);
+          console.log(data);
+          break;
+      case "[object Array]":
+          if(describe != "") console.log(describe);
+          console.log(data);
+          break;
+      case "[object Function]":
+          if(describe != "") console.log(describe);
+          console.log(data);
+          break;
+      default:
+          console.log(type);
+          console.log(data);
+          break;
+    }
+  }
+}
