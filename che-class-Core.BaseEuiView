@@ -31,5 +31,15 @@ module Core
                 App.MessageCenter.dispatch(Core.AppMessageType.EUI_VIEW_DESTROY,this);
             }
         }
+        
+        //皮肤组件的创建
+        protected childrenCreated():void
+        {
+            super.childrenCreated();
+            App.Display.moveToStageCenter(this);
+            App.MessageCenter.dispatch(Core.AppMessageType.EUI_VIEW_READY,this);
+        }
+        
+        
     }
 }
