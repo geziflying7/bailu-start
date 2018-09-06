@@ -1,0 +1,51 @@
+/**
+*消息处理类，实例化的对象类
+*/
+class App
+{
+    private static _loopLoading:Core.IBaseLoading;//转圈loading类对象
+    private static _fullLoading:Core.IBaseLoading;//完整loading类动画
+    
+    /**
+    *获取配置文件
+    */
+    public static getConfig(configResType:string):any
+    {
+        return RES.getRes(configResType);
+    }
+    
+    /**
+    *Http连接
+    */
+    public static getHttp():Core.HttpMod
+    {
+        return Core.HttpMod.getInstance();
+    }
+    
+    /**
+    *消息处理中心
+    */
+    public static getMessgeCenter():Core.MessageCenter
+    {
+        return Core.MessageCenter.getINstance();
+    }
+    
+    /**
+    *回调映射管理中心
+    */
+    public static get CallbackMappingCenetr():Core.CallbackMappingCenter
+    {
+      return Core.CallbackMappingCenter.getInstance();
+    }
+    
+    /**
+    *计时重复触发器
+    */
+    public static getGlobalRepeatTigger():Core.GlobalRepeatTigger
+    {
+        return Core.GlobalRepeatTigger.getInstance();
+    }
+    
+    
+    
+}
