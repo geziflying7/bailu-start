@@ -1,0 +1,11 @@
+/**
+*eui资源常量路径
+*/
+
+module Core
+{
+  export class AppConst
+  {
+      public static SKIN_PATH:string = "resource/skins/";
+  }
+}
