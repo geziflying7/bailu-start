@@ -1,0 +1,10 @@
+/**
+*图层管理
+*/
+module Core
+{
+    export class LayerManager extends BaseSingleton
+    {
+      public stage:egret.Stage;
+    }
+}
