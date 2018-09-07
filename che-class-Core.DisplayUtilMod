@@ -47,7 +47,130 @@ module Core
           {
               dis = dc.removeChildAt(i);
               if(autoDestroy&& dis["destroy"]) dis["destroy"]();
+              if(clearContent)
+              {
+                    if(dis["texture"]) dis["texture"] = null;
+                    if(dis["source"]) dis["source"] = null;
+                    if(dis["text"]) dis["text"] = null;
+              }
+              if(clearChild && dis["numChildren"]) this.clearDisplayContainer(dis as egret.DisplayObjectContainer,clearContent,clearChild);
           }
        }
+       
+       /**
+       *创建Bitmap对象
+       *@param resName  资源名称
+       *@param centerAnchor  是否将锚点居中
+       *@param x    x值
+       *@param y    y值
+       */
+       public createBitmap(resName:string,centerAnchor:Boolean = false,x:number = 0,y:number = 0):egret.Bitmap
+       {
+            var bmp:egret.Bitmap = new egret.Bitmap();
+            bmp.texture = RES.getRes(resName);
+            bmp.name = resName;
+            if(centerAnchor)
+            {
+                bmp.anchorOffsetX = bmp.texture.textureWidth / 2;
+                bmp.anchorOffsetY = bmp.texture.textureHeight / 2;
+            }
+            if(x != 0)bmp.x = x;
+            if(y != 0)bmp.y = y;
+            return bmp;
+       }
+       
+       /**
+       *异步加载位图资源到Bitmap.texture(通过资源名称加载)
+       */
+       public loadBitmapTexture(bmp:egret.Bitmap,resName:string):void
+       {
+            RES.getResAsync(resName,(data:any) => {bmp.texture = data},null);
+       }
+       
+       /**
+       *异步加载位图资源到Image.source(通过资源名称加载)
+       */
+       public loadImageSource(img:eui.Iamge,resName:string):void
+       {
+            RES.getResAsync(resName,(data:any)=>{ img.source = data},null);
+       }
+       
+       /**
+       *异步加载图像到Image(微信小游戏使用)
+       */
+       public loadImageByUrl(img:eui.Image,resUrl:string):void
+       {
+            let loader = new egret.ImageLoader();
+            laoder.addlistener(egret.Event.COMPLETE, (e:egret.Event) => {
+                    let loader = new egret.IamgeLoader();
+                    texture._setBitmapData(e.currentTarget.data);
+                    if(img.texture)img.texture.dispose();
+                    img.texture = texture;
+            },this);
+            loader.load(resUrl);
+       }
+       
+       /**
+       *为label添加描边
+       *@param label label对象
+       *@param color 描边颜色
+       *@param width 描边粗细
+       */
+       public addlableStroke(lable:eui.label,color:number,width:number):void
+       {
+            lable.strokeColor = color;
+            lable.stroke = width;
+       }
+       
+       /**
+       *增加灰度滤镜
+       *@param dis
+       */
+       public addGrayFlilter(dis:egret.DisplayObject):void
+       {
+            dis.filters = [Core.DisplayUtilMod.GrayMatrixFilter];
+       }
+       
+       /**
+       *一处灰度滤镜
+       *@param dis
+       */
+       public removeGrayFlilter(dis:egret.DisplayObject):void
+       {
+            dis.filters = [];
+       }
+       
+       /**
+       *将显示对象移至屏幕中心
+       *@param dis 显示对象
+       */
+       public moveToStageCenter(dis:egret.DisplayObject):void
+       {
+            if(dis && dis.stage)
+            {
+                var p:egret.Point = dis.localToGlobal(dis.x,dis.y);
+                var dx:number = (App.LayerManager.stage.stageWidth - p.x - p.x - dis.width) / 2;
+                var dy:numner = (App.LayerManager.stage.stageHeight - p.y - p.y - dis.height) / 2;
+                dis.x += dx;
+                dis.y += dy;
+            }
+       }
+       
+       /**
+       *将显示对象的层级提升至最上层  （所在容器内部的层级）
+       *@param dis 显示对象
+       */
+       public pushTop(dis:egret.DisplayObject):void
+       {
+            if(dis)
+            {
+                var dc:egret.DisplayObjectContaner = dis.parent;
+                if(dc)
+                {
+                    dc.setChildIndex(dis,dc.numChildren);
+                }
+            }
+       }
+       
     }
 }
