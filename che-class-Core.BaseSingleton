@@ -1,0 +1,34 @@
+/**
+*单例基类
+*/
+module Core
+{
+    export class BaseSingleton
+    {
+        /**
+        *获取单例实例
+        */
+        public static getInstance():any
+        {
+            var Class:any = this;
+            if(Class.__instance == null)
+            {
+                Class.__instance = new Class();
+            }
+            return Class.__instance;
+        }
+        
+        /**
+        *销毁实例
+        */
+        public destroyInstance():any
+        {
+            var Class:any = this;
+            if(Class.__instance)
+            {
+                Class.__instance = null;
+                detele Class.__instance;
+            }
+        }
+    }
+}
