@@ -1,0 +1,189 @@
+/**
+*自动布局，视窗同步管理器
+*/
+module Core{
+    export class LayoutSyncManager extends BaseSingleton
+    {
+        private static aspectRatioLimitLow:number = 1.5;//屏幕宽高比的下限（用于横屏布局）
+        private static aspectRatioLimitHigh:number = 2;//屏幕宽高比的上限（用于竖屏显示）
+        private static self:LayoutSyncManager;
+        
+        public clientLeft:number;
+        public clientTop:number;
+        public clientWidth:number;
+        public clientHeight:number;
+        public windowWidth:number;
+        public windowHeight:number;
+        public displayScale:number;
+        public scaleX:number;
+        public scaleY:number;
+        
+        private _clientSizeSyncList:egret.DisplayObjectContainer[];
+        private _autoLayoutMap:Core.HashMap;
+        private _childScaleRatio:number;
+        
+        private _isLandScape:boolean;
+        
+        private _stageW:number;
+        private _stageH:number;
+        
+        private _autoScaleDisplayObjectContainerMap:Core.HashMap;
+        
+        public constructor(){
+            super();
+            LayoutSyncManager.self = this;
+            this._clientSizeSyncList = [];
+            this._autoLayoutMap = new Core.HashMap();
+            this._childScaleRatio = 1;
+            this._autoScaleDisplayContainerMap = new Core.HashMap();
+        }
+        
+        public init(isSafari:boolean = false):void{
+            this.onClientWindowResize();
+            window.addEventListener("resise",this.onClientWindowResize);
+            if(isSafari)
+            {
+                setInterval(this.updateScrollTop,1000);
+            }
+            
+            this._stageW = App.LayerManager.stage.stageWidth;
+            this._stageH = App.LayerManager.stage.stageHeight;
+            this._isLandscape = this._stageW > this._StageH;
+        }
+        
+        /**
+        *注册自动布局对象
+        *@param dc  自动布局显示对象
+        *@param onlySyncDisList 子项自动布局列表（null表示所有子项）
+        */
+        public register(dc:egret.DisplayObjectContainer,onlySyncDisList:egret.DisplayObject[] = null):void
+        {
+            this.registerAutoLayout(dc.onlySyncDisList);
+            this.registerSyncToClientSize(dc);
+        }
+        
+        /**
+        *注销自动布局对象
+        *@param dc 自动布局对象
+        */
+        public unRegister(dc:egret.DisplayObjectContainer):void
+        {
+            this.unRegisterSyncToClientSize(dc);
+            this.unRegisterAutoLayout(dc);
+        }
+        
+        /**
+        *手动添加自动布局对象
+        *@param dc 自动布局的显示容器
+        *@param dis 显示容器内部的显示对象
+        */
+        public addLayoutItemToDc(dc:egret.DisplayObjectContainer,dis:egret.DisplayObject):void
+        {
+            if(dc && dis && dis.parent == dc)
+            {
+                var childLocMap:Core.HashMap = this._autoLayoutMap.getValue(dc);
+                if(childLocMap == null)
+                {
+                    childLocMap = new Core.HashMap();
+                    this._autoLayoutMap.add(dc,childLocMap);
+                }
+                childLocMap.add(dis,[dis.x,dis.y]);
+            }
+        }
+        
+       /**
+         * 手动移除自动布局显示对象
+         * @param dc        自动布局的显示容器
+         * @param dis       显示容器内部的显示对象
+         */
+        public removeLayoutItemFromDc(dc: egret.DisplayObjectContainer,dis: egret.DisplayObject): void
+        {
+            if(dc && dis)
+            {
+                var childLocMap: Core.HashMap = this._autoLayoutMap.getValue(dc);
+                if(childLocMap)
+                {
+                    childLocMap.remove(dis);
+                    if (childLocMap.keyList.length == 0)
+                    {
+                        this._autoLayoutMap.remove(dc);
+                    }
+                }
+            }
+        }
+        
+        /**
+         * 手动更新自动布局对象位置
+         * @param dc            自动布局的显示容器
+         * @param dis           显示容器内部的显示对象
+         * @param targetX       目标位置X
+         * @param targetY       目标位置Y
+         */
+        public updateLayoutItemLoc(dc: egret.DisplayObjectContainer,dis: egret.DisplayObject,targetX: number = NaN,targetY: number = NaN): void
+        {
+            if(dc && dis)
+            {
+                var childLocMap: Core.HashMap = this._autoLayoutMap.getValue(dc);
+                if(childLocMap)
+                {
+                    var locList:number[] = childLocMap.getValue(dis);
+                    if(locList && locList.length == 2)
+                    {
+                        if(targetX != NaN)
+                        {
+                            locList[0] = targetX;
+                        } else {
+                            locList[0] = dis.x;
+                        }
+                        if(targetY != NaN)
+                        {
+                            locList[1] = targetY;
+                        } else {
+                            locList[1] = dis.y;
+                        }
+                    }
+                }
+            }
+        }
+        
+        /**
+        *添加根据屏幕宽高比自动缩小的显示容器
+        *@param dc 显示容器
+        * @param limitWindowAspectRatio            限定宽高比（小于此值容器会被缩小）
+         */
+        public addAutoScaleDisplayContainer(dc:egret.DisplayObjectContainer, limitWindowAspectRatio:number = 1.5):void
+        {
+            this._autoScaleDisplayContainerMap.add(dc, limitWindowAspectRatio);
+        }
+
+        /**
+         * 移除根据屏幕宽高比自动缩小的显示容器
+         * @param dc                                显示容器
+         * @param limitWindowAspectRatio            限定宽高比（小于此值容器会被缩小）
+         */
+        public removeAutoScaleDisplayContainer(dc:egret.DisplayObjectContainer):void
+        {
+            this._autoScaleDisplayContainerMap.remove(dc);
+        }
+        
+        /**
+        *注册视窗同步对象
+        *注册后，显示对象容器的大小会自动匹配浏览器世纪窗口大小
+        */
+        private registerSyncToClientSize(dc:egret.DisplayContainer):void
+        {
+            if(dc)
+            {
+                if(this._clientSizeSyncList.indexOf(dc) < 0)
+                {
+                    this._clientSizeSyncList.push(dc);
+                    this.syncToClientSize();
+                }
+            }
+        }
+        
+        /**
+        *移除注册
+        */
+    }
+}
