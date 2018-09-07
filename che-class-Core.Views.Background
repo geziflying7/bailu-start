@@ -1,0 +1,128 @@
+/**
+*背景渲染类
+*/
+module Core.Views
+{
+  export class Background
+  {
+      //背景显示类型
+      public static NONE:string = "none";
+      public static TILED:string = "tiled";
+      public static STRETCH:string = "stretch";
+      
+      private _content:egret.DisplayObjectContainer;
+      private _width:number;
+      private:_height:number;
+      private _resGroupName:string;
+      private _textureName:string;
+      private _displayType:string;
+      
+      public constructor(width:number, height:number)
+      {
+        this._content = new egret.DisplayObjectContainer();
+        this._width = width;
+        this._height = height;
+        this._content.touchEnable = false;
+        this._content.touchChildren = false; 
+      }
+      
+      public destroy():void
+      {
+        this.removeResLoadEvents();
+        this.clear();
+        this._content = null;
+      }
+      
+      public loadFromResGroup(resGroupName:string, textureName:string, displayType:string = Background.NONE):void
+      {
+          this._resGroupName = resGroupName;
+          this._textureName = textureName;
+          this._displayType = displayType;
+          RES.addlistener(RES.RourceEvent.GROUP_COMPLETE,this.onResLaodComplete,this);
+          RES.addlistener(RES.RourceEvent.GROUP_LOAD_ERROR,this.onResLoaderError,this);
+          RES.loadGroup(resGroupName);
+      }
+      
+      public loadFromTexture(textureName:string, displayType:string = Background.NONE):void
+      {
+          this._textureName = textureName;
+          this._displayType = displayType;
+          this.loadTexture();
+      }
+      
+      private loadTexture():void
+      {
+          this.clear();
+          var bmp:egret.Bitmap;
+          if(this._displayType == Background.STRETCH)
+          {
+              bmp = new egret.Bitmap(RES.getRes(this._textureName));
+              bmp.width = App.LayerManager.stage.stageWidth;
+              bmp.height = App.LayerManager.stage.stageHeight;
+              bmp.fillMode = egret.BitmapFillMode.SCALE;//平铺
+              tis._content.addChild(bmp);
+          }else if(this._displayType == Background.TILED)
+          {
+              bmp = new egret.Bitmap(RES.getRes(this._textureName));
+              bmp.width = App.LayerManager.stage.stageWidth;
+              bmp.height = App.LayerManager.stage.stageHeight;
+              bmp.fillMode = egret.BitmapFillMode.REPEAT;//填充
+              this._content.addChild(bmp);
+              this._content.cacheAsBitmap = true;
+          }else
+          {
+              bmp = new egret.Bitmap(RES.getRes(this._textureName));
+              this._content.addChild(bmp);
+          }
+      }
+      
+      private onResLoadComplete(e:RES.ResourceEvent):void
+      {
+          if(e.groupName == this._resGroupName)
+          {
+              this.removeResLaodEvents();
+              this.loadTexture();
+          }
+      }
+      
+      prtivate onResLaodError(e:RES.ResourceEvent):void
+      {
+          if(e.groupName == this._resGroupName)
+          {
+              this.removeResLoadEvents();
+          }
+      }
+      
+      private removeResLoadEvents():void
+      {
+          RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE,this.onResLoadComplete,this);
+          RES.removeEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR,this.onResLoadError,this);
+      }
+      
+      public clear():void
+      {
+          this._content.cacheAsBitmap = false;
+          var bmp:egret.Bitmap;
+          for(var i:number = this._content.numChildren - 1; i >= 0;i--)
+          {
+              bmp = this._content.removeChildAt(i) as egret.Bitmap;
+              if(bmp)
+              {
+                bmp.texture = null;
+              }
+          }
+      }
+      
+      public get conetnt():egret.DisplayObject
+      {
+          return this._content;
+       }
+       
+       public get width():number {
+        return this._width;
+       }
+       public get height():number{
+        return this._height;
+       }
+  }
+}
