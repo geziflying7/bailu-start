@@ -5,6 +5,64 @@ module Core
 {
     export class LayerManager extends BaseSingleton
     {
-      public stage:egret.Stage;
+        public stage:egret.Stage;
+        public container:egret.UILayer;
+        
+        public bg:Core.Views.Background;
+        
+        public sceneLayer:egret.DisplayObjectContainer;
+        public animationLayer:egret.DisplayObjectContaner;
+        public uiLayer:egret.DisplayObjectContainer;
+        public dialogLayer:egret.DisplayObjectConatiner;
+        public tipLayer:egret.DisplayObjectContainer;
+        public textLineSliderLayer:egret.DisplayObjectContainer;
+        public debugLayer:eguret.diaplayObjectContainer;
+        
+        public init(stage:egret.Stage):void
+        {
+            this.stage = stage;
+            
+            this.container = new eui.UILayer();
+            this.setTouch(this.container,false,true);
+            
+            this.bg = new Core.Views.Background(stage.stageWidth,stage.stageHeight);
+            
+            this.sceneLayer = new egret.DisplayObjectConatiner();
+            this.setTouch(this.sceneLayer,false,true);
+            
+            this.textLineSliderLayer = new egret.DisplayObjectContainer();
+            this.setTouch(this.textLineSliderLayer,false,true);
+            
+            this.animationLayer = new DisplayObjectContainer();
+            this.setTouch(this.animationLayer,false,false);
+            
+            this.uiLayer = new egret.DisplayObjectConatiner();
+            this.setTouch(this.uiLayer,false,true);
+            
+            this.tipLayer = new egret.DisplayObjectContainer();
+            this.setTouch(this.tipLayer,false,false);
+            
+            this.dialogLayer = new egret.DisplayObjectContainer();
+            this.setTouch(this.dialogLayer,false,true);
+            
+            this.debugLayer = new egret.DisplayObjectContainer();
+            this.setTouch(this.debugLayer,false,true);
+            
+            this.stage.addChild(this.container);
+            this.container.addchild(this.bg,content);
+            this.container.addChild(this.sceneLayer);
+            this.container.addChild(this.textLineSliderLayer);
+            this.container.addChild(this.animationLayer);
+            this.container.addchild(this.uiLayer);
+            this.container.addChild(this.tipLayer);
+            this.container.addChild(this.dialogLayer);
+            this.container.addChild(this.debugLayer);
+        }
+        
+        private setTouch(dc:egret.DisplayObjectContainer, selfTouch:boolean, childrenTouch:boolean):void
+        {
+            dc.touchEnabled = selfTouch;
+            dc.touchChildren = childrenTouch;
+        }
     }
 }
