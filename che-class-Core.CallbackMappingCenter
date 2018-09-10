@@ -8,6 +8,23 @@ module Core
 {
     export class callbackMappingCenter extends BaseSingleton
     {
+        private _callbackFunctionList:Function[] = [];
+        private _callbackThisList:any[] = [];
+        private _vClasslist:any[] = [];
         
+        public register(callbackFunction:Function, callbackThis:any, vClass:any):void
+        {
+            this._callbackFunctionList.push(callbackFunction);
+            this._callbackThisList.push(callbackThis);
+            this._vClassList.push(vClass);
+        }
+        
+        /**
+        *通过回调方法来注销回调bangding
+        */
+        public unRegister(callbackFunction:Function):void
+        {
+            
+        }
     }
 }
