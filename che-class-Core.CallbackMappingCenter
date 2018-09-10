@@ -24,7 +24,54 @@ module Core
         */
         public unRegister(callbackFunction:Function):void
         {
-            
+            for(var i:number = this._callbackFunctionList.length - 1;i >= 0;i--)
+            {
+                if(this._callbackFunctionList[i]  == callbackFunction)
+                {
+                    this._callbackFunctionList.splice(i, 1);
+                    this._callbackThisList.splice(i,1);
+                    this._vClassList.splice(i, 1);
+                }
+            }
+        }
+        
+        /**
+        *通过回到对象类来注销回调绑定
+        *@param thisObj 对调对象
+        */
+        public unRegisterByThisObj(thisObj:any):void
+        {
+            for(var i:number = this._callbackThisList.length - 1; i>= 0;i--)
+            {
+                if(this._calbackThisList[i] == thisObj)
+                {
+                    his._callbackFunctionList.splice(i, 1);
+                    this._callbackThisList.splice(i,1);
+                    this._vClassList.splice(i, 1);
+                }
+            }
+        }
+        
+        /**
+        *回调
+        */
+        public doCallback(vClassInstance:any, type:string, value:any = null):void
+        {
+            var callBackFuncList:FUnction[] = App.callbackMappingCenter.getCallFunctionList(vClassInstance);
+            if(callbackFuncList.length > 0)
+            {
+                var callBacckFunc:Functon;
+                var callBackThis:any;
+                for(var i:number = 0;i < callBackFuncList.length;i++)
+                {
+                    callBackFunc = callBackFuncList[i];
+                    callBackThis = App.callbackMappingCenter.getCallFunctionThis(vCalssInstance,callBackFunc);
+                    if(callBackFunc != null && callBackThis != null)
+                    {
+                        callBackFunc.call(callBackthis ,type, value);
+                    }
+                }
+            }
         }
     }
 }
