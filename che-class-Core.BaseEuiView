@@ -40,6 +40,14 @@ module Core
             App.MessageCenter.dispatch(Core.AppMessageType.EUI_VIEW_READY,this);
         }
         
-        
+        /**
+        *发送消息给控制器（调用通过App.CallbackMappingCenter绑定到该视图的控制器内部的回调函数）
+        *@param type 动作类型
+        *@param value 数据
+        */
+        protected callbackProcessor(type:string, value:any = null):void
+        {
+            App.CallbackMappingCenter.doCallback(this,type,value);
+        }
     }
 }
