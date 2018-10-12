@@ -30,3 +30,18 @@ tx.textFlow = <Array<egret.ITextElement>>[
     , {text: "Egret", style: {"textColor": 0x336699, "size": 60, "strokeColor": 0x6699cc, "stroke": 2}}
 ];
 
+
+----href文本touch超链接事件--------------------------------------
+一段文字中，部分文字点击事件:
+有时有这样的需求：在一大段文字中，有某一段需要作为热区，响应Touch事件。可以通过对该段文字设置 href 来实现，类似于html中的 href
+
+var txt:egret.TextField = new egret.TextField();
+txt.textFlow = <Array<egret.ITextElement>>[
+    { text:"This is a hyperlink", style: { "href" : "event:text event triggered" } }
+    ,{ text:"\n This is just a text", style: {} }
+];
+
+tx.touchEnable = true;
+tx.addEventListener(egret.TextEvent.LINK,function(e:egret.touchEvent){
+    console.log(e.text);//点击的触发文字
+},this);
