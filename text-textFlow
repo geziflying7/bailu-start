@@ -1,0 +1,32 @@
+HTML方式实现的字体变色：
+var parser:egret.HtmlTextParser = new egret.HtmlTextParser();
+var textflowArr:Array<Array<egret.ITextElement>> = [];
+for(var i:number = 0; i < result.length; i++){
+    textflowArr.push(parser.parser(result[i]));
+}
+--------------(new egret.HtmlTextParser).parser(标签格式)-----------------------------------
+tx.textFlow = (new egret.HtmlTextParser).parser(
+    '<font size=20>Text in </font>'
+    + '<font color=0x336699 size=60 strokecolor=0x6699cc stroke=2>Egret</font>'
+    + '<font fontfamily="Impact"> can </font>' 
+    + '<font fontfamily="Times New Roman "><u>be set </u></font>' 
+    + '<font color=0xff0000>to a </font>' 
+    + '<font> \n </font>'
+    + '<font color=0x00ff00>variety </font>' 
+    + '<font color=0xf000f0>of </font>' 
+    + '<font color=0x00ffff>styles </font>'  
+    + '<font size=56>with </font>' 
+    + '<font size=16>different </font>' 
+    + '<font size=26>colors, </font>' 
+    + '<font> \n </font>'
+    + '<font color=0x00ff00><i>fonts </i></font>' 
+    + '<font size=26 color=0xf000f0 fontfamily="Quaver">and </font>' 
+    + '<font color=0xf06f00><i>sizes</i></font>';
+);
+
+JSON方式实现的类似结果：
+tx.textFlow = <Array<egret.ITextElement>>[
+    {text: "Text in ", style: {"size": 20}}
+    , {text: "Egret", style: {"textColor": 0x336699, "size": 60, "strokeColor": 0x6699cc, "stroke": 2}}
+];
+
