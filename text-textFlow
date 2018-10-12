@@ -40,8 +40,22 @@ txt.textFlow = <Array<egret.ITextElement>>[
     { text:"This is a hyperlink", style: { "href" : "event:text event triggered" } }
     ,{ text:"\n This is just a text", style: {} }
 ];
-
 tx.touchEnable = true;
+
 tx.addEventListener(egret.TextEvent.LINK,function(e:egret.touchEvent){
     console.log(e.text);//点击的触发文字
 },this);
+
+注意：
+1.  其中 href 属性的内容以 event: 开头，后边跟随一个字符串，用于输出相应的文字或用于识别包含该链接的文字段。
+    然后侦听 TextEvent.LINK 事件，在事件处理函数中通过事件对象的 text 属性来获取该段文字所设置的字符串。
+
+tx.textFlow = new Array<egret.ITextElement>(
+    { text:"这段文字有链接", style: { "href" : "http://www.egret.com/" } }
+    ,{ text:"\n这段文字没链接", style: {} }
+);
+2.  将上面的 href 对应的字符串修改为 url 即可打开相应的 url。下面代码即可打开 Egret 的首页。
+
+
+
+
