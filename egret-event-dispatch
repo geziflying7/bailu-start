@@ -1,0 +1,8 @@
+# http://developer.egret.com/cn/apidoc/index/name/egret.EventDispatcher
+egert-self defined event:these event things ,you will make it first use Dispatch with event.
+dispatch with is 发起事件，当在别的地方使用的时候，监听这个发起的自定义的某一个事件，之后结束之后销毁这个自定义事件。
+
+egret.EventDispatch类继承自egret.HashObject
+这是egret的事件派发器类，负责进行事件的发送和监听。
+
+事件如何通过显示列表层次结构----焦点问题。
